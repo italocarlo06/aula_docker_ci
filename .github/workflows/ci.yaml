@@ -11,12 +11,7 @@ on:
 jobs:
   build:
     name: 'Build and Push'
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        node-version: [18, 20, 22]
-        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ubuntu-latest
 
     steps:
       - name: 'Checkout the code'
@@ -25,7 +20,7 @@ jobs:
       - name: 'Set up Nodejs'
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 22
           cache: 'yarn'
 
       - name: 'Install dependencies'
@@ -33,3 +28,12 @@ jobs:
 
       - name: 'Run Tests'
         run: yarn test
+
+      - name: Generate tag
+        id: generate_tag
+        run: |
+          SHA=$(echo $GITHUB_SHA | head -c7)
+          echo "sha=$SHA" >> $GITHUB_OUTPUT
+
+      - name: 'Build Docker Image'
+        run: docker build -t aula-ci-api:${{ steps.generate_tag.outputs.sha }} .
