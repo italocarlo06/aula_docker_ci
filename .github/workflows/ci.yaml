@@ -46,3 +46,29 @@ jobs:
 
       - name: Push image
         run: docker push ${{ vars.DOCKERHUB_REPOSITORY }}/aula-docker-ci-api:${{ steps.generate_tag.outputs.sha }}
+
+  deploy:
+    name: 'Deploy on Digital Ocean'
+    runs-on: ubuntu-latest
+    needs: build
+    
+    steps:
+      - name: Deploy to Digital Ocean droplet via SSH action
+        uses: appleboy/ssh-action@v0.1.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          envs: IMAGE_NAME,REGISTRY,{{ secrets.DIGITALOCEAN_ACCESS_TOKEN }},GITHUB_SHA
+          script: |
+            # Login to registry
+            docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }} 
+            # Stop running container
+            docker stop aula-docker-ci-api
+            # Remove old container
+            docker rm aula-docker-ci-api
+            # Run a new container from a new image
+            docker run -d \
+            --restart always \
+            --name aula-docker-ci-api \
+            ${{ vars.DOCKERHUB_REPOSITORY }}/aula-docker-ci-api:${{ steps.generate_tag.outputs.sha }}
