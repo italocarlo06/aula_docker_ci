@@ -42,11 +42,12 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: 'Build Docker Image'
-        run: docker compose -t ${{ vars.DOCKERHUB_REPOSITORY }}/aula-docker-ci-api:${{ steps.generate_tag.outputs.sha }} .
-
-      - name: Push image
-        run: docker push ${{ vars.DOCKERHUB_REPOSITORY }}/aula-docker-ci-api:${{ steps.generate_tag.outputs.sha }}
+      - name: 'Build and Push Docker Image'
+        run: |
+            TAG=${{ steps.generate_tag.outputs.sha }}
+            export TAG
+            docker compose build
+            docker compose push
 
   deploy:
     name: 'Deploy on Digital Ocean'
