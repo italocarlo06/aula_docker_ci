@@ -74,4 +74,4 @@ jobs:
             docker run -d \
             --restart always \
             --name aula-docker-ci-api \
-            ${{ vars.DOCKERHUB_REPOSITORY }}/aula-docker-ci-api:${{ steps.generate_tag.outputs.sha }}
+            ${{ vars.DOCKERHUB_REPOSITORY }}/aula-docker-ci-api:$TAG
