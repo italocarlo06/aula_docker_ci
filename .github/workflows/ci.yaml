@@ -12,7 +12,8 @@ jobs:
   build:
     name: 'Build and Push'
     runs-on: ubuntu-latest
-
+    outputs:
+      docker_tag: ${{ steps.generate_tag.outputs.sha }}
     steps:
       - name: 'Checkout the code'
         uses: actions/checkout@v2
@@ -59,8 +60,10 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
-          envs: IMAGE_NAME,REGISTRY,{{ secrets.DIGITALOCEAN_ACCESS_TOKEN }},GITHUB_SHA
+          envs: GITHUB_SHA
           script: |
+            # Extract the tag from build job
+            TAG=${{ needs.build.outputs.docker_tag }}
             # Login to registry
             docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }} 
             # Stop running container
