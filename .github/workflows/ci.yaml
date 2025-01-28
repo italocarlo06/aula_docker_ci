@@ -54,13 +54,16 @@ jobs:
     needs: build
     
     steps:
+      - name: 'Checkout the code'
+        uses: actions/checkout@v2
+        
       - name: Copy File via ssh password
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}          
-          source: "./*"
+          source: "./docker-compose.yaml"
           target: "/"
           
       - name: Deploy to Digital Ocean droplet via SSH action
