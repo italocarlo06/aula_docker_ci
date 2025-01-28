@@ -64,7 +64,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}          
           source: "./docker-compose.yaml"
-          target: "/"
+          target: "~/"
           
       - name: Deploy to Digital Ocean droplet via SSH action
         uses: appleboy/ssh-action@v0.1.3
