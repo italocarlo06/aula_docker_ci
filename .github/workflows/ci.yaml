@@ -60,7 +60,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}          
-          source: "*"
+          source: "./*"
           target: "/"
           
       - name: Deploy to Digital Ocean droplet via SSH action
