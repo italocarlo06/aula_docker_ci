@@ -94,7 +94,7 @@ jobs:
             if [ -n "$CONTAINERS" ]; then
               docker rm $CONTAINERS
             else
-              echo "No containers to remove."
+              echo "No containers to remove"
             fi
             # Run a new container from a new image
             docker-compose up -d --build
